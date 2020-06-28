@@ -5,20 +5,23 @@ set -u # Abort script on dereference of undefined variable
 set -o pipefail # Treat error within pipeline as a script-level error
 set -x # Trace what the script is doing
 
-# Install and verify PHPUnit for our testing, since we'll have PHP available anyway.
+# Install and verify Composer, to use to install the rest of the dependencies.
+# I'd prefer to use phive, as it can use GPG signatures for validation. However:
+# 
+#  - Not all the dependencies I want (I.e. adoy/PHP-FastCGI-Client ) provide these signatures anyway
+#  - Composer has better tooling integration, most notably with Github's dependency mapping
+#  - I'd like to use Github's dependency mapping to trigger auto-rebuilds as listed dependencies change
 
-curl --verbose --location --output phive.phar https://phar.io/releases/phive.phar
-curl --verbose --location --output phive.phar.asc https://phar.io/releases/phive.phar.asc
+curl --verbose --location --output expected_composure_signature.sig https://composer.github.io/installer.sig
+expected_signature=$(cat expected_composure_signature.sig)
 
-apk add gnupg
+curl --verbose --location --output composer-setup.php https://getcomposer.org/installer
+actual_signature=$(php -r "echo hash_file('SHA384', 'composer-setup.php');")
 
-gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79
-gpg --verify phive.phar.asc phive.phar
-chmod +x phive.phar
+[ "${expected_signature}" == "${actual_signature}" ]
 
-apk add ncurses # Needed for tput, needed by phive.
+php composer-setup.php
 
-# Sebastian Bergmann's signing key
-# -- 0x4AA394086372C20A
-# If phive ever adds a way to accept keys iff there's a fingerprint match, let me know?
-./phive.phar install phpunit --trust-gpg-keys 4AA394086372C20A
+php composer.phar install
+
+vendor/bin/phpunit tests

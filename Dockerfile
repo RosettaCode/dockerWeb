@@ -8,9 +8,3 @@ COPY testBase /testBase
 WORKDIR /testBase
 
 RUN chmod -R +x /testBase && /testBase/stage.sh
-
-FROM testBase
-
-COPY testBaseTests /testBase
-
-RUN chmod -R +x /testBase && /testBase/stage.sh

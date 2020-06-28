@@ -1,0 +1,12 @@
+{
+    "name": "rosettacode/docker-web-testBase",
+    "description": "MediaWiki install for Rosetta Code testBase build stage",
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    }
+}
