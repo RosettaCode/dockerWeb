@@ -1,5 +1,5 @@
 {
-    "name": "rosettacode/docker-web-testBase",
+    "name": "rosettacode/docker-web-testbase",
     "description": "MediaWiki install for Rosetta Code testBase build stage",
     "autoload": {
         "classmap": [

@@ -73,6 +73,6 @@
 
     php composer-setup.php
 
+    # Because composer will complain. We'll re-run in a later stage, we just don't want to regen this layer all the time.
+    mkdir -p src
     php composer.phar install
-
-    vendor/bin/phpunit tests
