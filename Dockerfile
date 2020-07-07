@@ -19,4 +19,8 @@ ARG TEST_RUN_ID=nil
 
 COPY testRun /proj
 
+COPY testRun/image_root /
+
 RUN chmod -R +x stage.sh && ./stage.sh
+
+EXPOSE 9000

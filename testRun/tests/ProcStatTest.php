@@ -96,7 +96,7 @@ final class ProcStatTest extends TestCase
 
         $this->assertTrue($dead_proc->status(), "process should still be executing\n");
 
-        exec( "kill " . $dead_proc->pid );
+        exec( "kill -9 " . $dead_proc->pid );
 
         $this->assertFalse($dead_proc->status(), "$output[0] should be dead");
     }
