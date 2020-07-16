@@ -1,5 +1,7 @@
 FROM php:7.4-fpm-alpine as base
 
+COPY php-fpm.conf /usr/local/etc
+
 RUN mkdir -p /proj
 
 COPY composer.json /proj/
