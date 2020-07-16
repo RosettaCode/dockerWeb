@@ -8,6 +8,6 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9",
-        "adoy/fastcgi-client": "dev-master"
+        "adoy/fastcgi-client": "1.0.2"
     }
 }
