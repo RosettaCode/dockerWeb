@@ -1,26 +1,53 @@
-FROM php:7.4-fpm-alpine as base
+#FROM php:7.4-fpm-alpine as base
+FROM php:7.4-fpm as base
 
-RUN mkdir -p /proj
+RUN apt-get update && apt-get install -y bsdmainutils procps git zip unzip
 
+COPY php-fpm.conf /usr/local/etc/
+
+COPY ./testBase /proj
 COPY composer.json /proj/
-
-FROM base as testBase
-# Let's make sure the base image we're operating on has working PHP to our needs.
-
-COPY testBase /proj
 
 WORKDIR /proj
 
-RUN chmod -R +x stage.sh && ./stage.sh
+RUN chmod +x ./stage.sh && ./stage.sh
 
-FROM testBase as testRun
+#RUN rm -rf /proj
 
-ARG TEST_RUN_ID=nil
+FROM base as testBase
 
-COPY testRun /proj
+COPY ./testRun /proj/
+#
+RUN apt-get install -y iproute2
 
-COPY testRun/image_root /
+RUN php composer.phar install
 
-RUN chmod -R +x stage.sh && ./stage.sh
+FROM testBase as testScripts
 
-EXPOSE 9000
+RUN vendor/bin/phpunit --testdox tests
+
+# php-fpm sends its logs to
+# /usr/local/var/log/error_log 2>&1
+#
+# php-fpm is configured by
+# /usr/local/etc/php-fpm.conf
+
+#RUN ./stage.sh
+
+#COPY testBase /proj
+#
+#WORKDIR /proj
+#
+#RUN chmod -R +x stage.sh && ./stage.sh
+#
+#FROM testBase as testRun
+#
+#ARG TEST_RUN_ID=nil
+#
+#COPY testRun /proj
+#
+#COPY testRun/image_root /
+#
+#RUN chmod -R +x stage.sh && ./stage.sh
+#
+#EXPOSE 9000
